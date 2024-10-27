@@ -18,7 +18,7 @@ type Props = {
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const ButtonAppBar: React.FC<Props> = ({ user, auth }) => {
+const Navbar: React.FC<Props> = ({ user, auth }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -142,4 +142,4 @@ const ButtonAppBar: React.FC<Props> = ({ user, auth }) => {
     </Box>
   );
 };
-export default ButtonAppBar;
+export default Navbar;
