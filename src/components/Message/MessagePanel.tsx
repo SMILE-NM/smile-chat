@@ -12,24 +12,16 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { User } from 'firebase/auth';
-import MessageList from './Message/MessageList'; // Импортируем компонент списка сообщений
-import MessageInput from './Message/MessageInput'; // Импортируем компонент ввода сообщения
+import MessageList from './MessageList'; // Импортируем компонент списка сообщений
+import MessageInput from './MessageInput'; // Импортируем компонент ввода сообщения
+import { Message } from '../../types';
 
 type Props = {
   user: User | null;
   db: Firestore;
 };
 
-interface Message {
-  id: string;
-  text: string;
-  createdAt: Date;
-  uid: string;
-  displayName: string | null;
-  photoURL: string | null;
-}
-
-const ChatRoom: React.FC<Props> = ({ user, db }) => {
+const MessagePanel: React.FC<Props> = ({ user, db }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>('');
   const { uid, displayName, photoURL } = user || {};
@@ -82,7 +74,7 @@ const ChatRoom: React.FC<Props> = ({ user, db }) => {
 
   return (
     <div>
-      <MessageList messages={messages} />
+      <MessageList messages={messages} userName={user?.displayName || ''} />
       <MessageInput
         newMessage={newMessage}
         handleChange={handleChange}
@@ -92,4 +84,4 @@ const ChatRoom: React.FC<Props> = ({ user, db }) => {
   );
 };
 
-export default ChatRoom;
+export default MessagePanel;
