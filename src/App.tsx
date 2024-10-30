@@ -1,13 +1,13 @@
 // App.tsx
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+//Firebase
 import { auth } from './api/firebase';
-
+import { User } from 'firebase/auth';
+//Components
+import Navbar from './components/Navbar';
 import LoginPage from './pages/LoginPage';
 import MainPage from './pages/MainPage';
-
-import Navbar from './components/Navbar';
-import { User } from 'firebase/auth';
 
 const App = () => {
   const [user, setUser] = useState<User | null>(auth.currentUser);
@@ -32,7 +32,6 @@ const App = () => {
           path="/"
           element={user ? <MainPage user={user} /> : <LoginPage />}
         />
-        {/* Можно добавить дополнительные маршруты по мере необходимости */}
       </Routes>
     </Router>
   );

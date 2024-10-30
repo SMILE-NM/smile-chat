@@ -9,6 +9,7 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
+import { Message } from '../../types';
 
 type Contact = {
   id: number;
@@ -18,9 +19,13 @@ type Contact = {
 
 type ContactListProps = {
   contacts: Contact[];
+  // db: db;
+  // setMessages: (value: Message[]) => void;
 };
 
 const ContactList: React.FC<ContactListProps> = ({ contacts }) => {
+  // const handleChangeMessages()
+
   return (
     <List
       sx={{

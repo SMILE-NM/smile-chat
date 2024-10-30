@@ -24,13 +24,13 @@ const MessageInput: React.FC<Props> = ({
         onChange={handleChange}
         value={newMessage}
         id="fullWidth"
-        variant="outlined" // Используем контурный стиль
-        placeholder="Введите ваше сообщение..." // Плейсхолдер
+        variant="outlined"
+        placeholder="Введите ваше сообщение..."
         sx={{
-          margin: '8px', // Отступ между текстовым полем и кнопкой
+          margin: '8px',
 
           '& .MuiOutlinedInput-root': {
-            borderRadius: '15px', // Закругляем углы текстового поля
+            borderRadius: '15px',
           },
         }}
       />
