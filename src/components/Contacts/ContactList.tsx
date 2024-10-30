@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Card,
-  CardContent,
   Avatar,
   Typography,
   List,
@@ -9,22 +8,21 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { Message } from '../../types';
-
-type Contact = {
-  id: number;
-  name: string;
-  avatarUrl?: string;
-};
+import { Contact, Message } from '../../types';
+import { getMessages } from '../../services/firebaseServices';
 
 type ContactListProps = {
   contacts: Contact[];
-  // db: db;
-  // setMessages: (value: Message[]) => void;
+  setMessages: (value: Message[]) => void;
 };
 
-const ContactList: React.FC<ContactListProps> = ({ contacts }) => {
-  // const handleChangeMessages()
+const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
+  const handleChangeMessages = (
+    collectionName: string,
+    setMessages: (value: Message[]) => void,
+  ) => {
+    getMessages(collectionName, setMessages);
+  };
 
   return (
     <List
@@ -38,10 +36,12 @@ const ContactList: React.FC<ContactListProps> = ({ contacts }) => {
     >
       {contacts.map((contact) => (
         <Card
-          // onClick={''}
+          onClick={() =>
+            handleChangeMessages(contact.collectionName, setMessages)
+          }
           key={contact.id}
           sx={{
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', // Современная тень
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             '&:hover': {
               backgroundColor: '#f5f5f5',
             },

@@ -2,7 +2,6 @@ import { useState } from 'react';
 //Services
 import { sendMessage } from '../../services/firebaseServices';
 //Firebase
-import { Firestore } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 //Types
 import { Message } from '../../types';
@@ -12,11 +11,10 @@ import MessageInput from './MessageInput';
 
 type Props = {
   user: User | null;
-  db: Firestore;
   messages: Message[];
 };
 
-const MessagePanel: React.FC<Props> = ({ user, db, messages }) => {
+const MessagePanel: React.FC<Props> = ({ user, messages }) => {
   const [newMessage, setNewMessage] = useState<string>('');
   const { uid, displayName, photoURL } = user || {};
 
@@ -26,8 +24,11 @@ const MessagePanel: React.FC<Props> = ({ user, db, messages }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (db && newMessage.trim()) {
-      await sendMessage(db, { text: newMessage, uid, displayName, photoURL });
+    if (newMessage.trim()) {
+      await sendMessage(
+        { text: newMessage, uid, displayName, photoURL },
+        'messages',
+      );
       setNewMessage('');
     }
   };

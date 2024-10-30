@@ -4,16 +4,15 @@ import {
   orderBy,
   limit,
   onSnapshot,
-  Firestore,
   addDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 import { Message } from '../types/messageTypes';
+import { db } from '../api/firebase';
 
 export const getMessages = (
-  db: Firestore,
-  callback: (messages: Message[]) => void,
   messageCollectionName: string,
+  callback: (messages: Message[]) => void,
 ) => {
   const messagesRef = collection(db, messageCollectionName);
   const messagesQuery = query(messagesRef, orderBy('createdAt'), limit(100));
@@ -29,12 +28,16 @@ export const getMessages = (
       displayName: doc.data().displayName || null,
       photoURL: doc.data().photoURL || null,
     })) as Message[];
+    console.log('DATA', data);
     callback(data);
   });
 };
 
-export const sendMessage = async (db: Firestore, message: Partial<Message>) => {
-  await addDoc(collection(db, 'messages'), {
+export const sendMessage = async (
+  message: Partial<Message>,
+  collectionName: string,
+) => {
+  await addDoc(collection(db, collectionName), {
     ...message,
     createdAt: serverTimestamp(),
   });

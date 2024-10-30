@@ -1,7 +1,6 @@
 import { TextField, IconButton } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send'; // Импортируем иконку отправки
 import React from 'react';
-import { Send, SendRounded, SendSharp } from '@mui/icons-material';
+import { SendRounded } from '@mui/icons-material';
 
 type Props = {
   newMessage: string;
