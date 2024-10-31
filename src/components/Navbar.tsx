@@ -6,19 +6,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-
-import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
 import { Avatar, Menu, MenuItem, Tooltip } from '@mui/material';
 import { Google } from '@mui/icons-material';
+import { User } from 'firebase/auth';
 
 type Props = {
   user: User | null;
   auth?: any;
+  signInWithGoogle: () => void;
 };
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const Navbar: React.FC<Props> = ({ user, auth }) => {
+const Navbar: React.FC<Props> = ({ user, auth, signInWithGoogle }) => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -41,15 +41,8 @@ const Navbar: React.FC<Props> = ({ user, auth }) => {
     setAnchorElUser(null);
   };
 
-  const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      // Handle successful sign-in
-    } catch (error) {
-      // Handle sign-in error
-      console.error('Error signing in with Google', error);
-    }
+  const handleLogin = async () => {
+    await signInWithGoogle();
   };
 
   const signOut = async () => {
@@ -122,7 +115,7 @@ const Navbar: React.FC<Props> = ({ user, auth }) => {
             </Box>
           ) : (
             <Button
-              onClick={signInWithGoogle}
+              onClick={handleLogin}
               variant="outlined"
               endIcon={<Google />}
               sx={{

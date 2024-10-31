@@ -1,16 +1,13 @@
-// LoginPage.tsx
 import React from 'react';
-import { auth } from '../api/firebase';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+type Props = {
+  signInWithGoogle: () => void;
+};
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC<Props> = ({ signInWithGoogle }) => {
   const handleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error('Error during login:', error);
-    }
+    console.log('Working 1');
+    await signInWithGoogle();
+    console.log('Working 2');
   };
 
   return (

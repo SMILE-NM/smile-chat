@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 //Firebase
 import { auth } from './api/firebase';
 import { User } from 'firebase/auth';
+import { signInWithGoogle } from './services/authService'; // Импортируйте функцию аутентификации
+
 //Components
 import Navbar from './components/Navbar';
 import LoginPage from './pages/LoginPage';
@@ -26,11 +28,17 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar user={user} auth={auth} />
+      <Navbar user={user} auth={auth} signInWithGoogle={signInWithGoogle} />
       <Routes>
         <Route
           path="/"
-          element={user ? <MainPage user={user} /> : <LoginPage />}
+          element={
+            user ? (
+              <MainPage user={user} />
+            ) : (
+              <LoginPage signInWithGoogle={signInWithGoogle} />
+            )
+          }
         />
       </Routes>
     </Router>
