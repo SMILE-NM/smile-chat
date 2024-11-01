@@ -22,7 +22,7 @@ const MainPage: React.FC<Props> = ({ user }) => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <ContactList contacts={contacts} setMessages={setMessages} />
+      <ContactList />
       <div style={{ flex: 2 }}>
         <MessagePanel user={user} messages={messages} />
       </div>

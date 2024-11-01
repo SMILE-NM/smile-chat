@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchUsers } from '../../services/userService';
 import {
   Card,
   Avatar,
@@ -16,13 +17,28 @@ type ContactListProps = {
   setMessages: (value: Message[]) => void;
 };
 
-const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
-  const handleChangeMessages = (
-    collectionName: string,
-    setMessages: (value: Message[]) => void,
-  ) => {
-    getMessages(collectionName, setMessages);
-  };
+const ContactsList = () => {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  console.log('Users', users);
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const usersList = await fetchUsers();
+        setUsers(usersList);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUsers();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <List
@@ -34,12 +50,12 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
         overflowY: 'auto',
       }}
     >
-      {contacts.map((contact) => (
+      {users.map((user) => (
         <Card
-          onClick={() =>
-            handleChangeMessages(contact.collectionName, setMessages)
-          }
-          key={contact.id}
+          // onClick={() =>
+          //   handleChangeMessages(contact.collectionName, setMessages)
+          // }
+          key={user.id}
           sx={{
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             '&:hover': {
@@ -49,15 +65,15 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
           }}
         >
           <ListItem>
-            <ListItemAvatar>
-              <Avatar src={contact.avatarUrl} sx={{ bgcolor: '#1976d2' }}>
-                {contact.name[0]}
+            <ListItemAvatar sx={{ marginLeft: '10px' }}>
+              <Avatar src={user.photoURL} sx={{ bgcolor: '#1976d2' }}>
+                {user.name[0].toUpperCase()}
               </Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Typography sx={{ fontWeight: 'regular', color: '#333' }}>
-                  {contact.name}
+                  {user.name}
                 </Typography>
               }
             />
@@ -68,4 +84,29 @@ const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
   );
 };
 
-export default ContactList;
+export default ContactsList;
+
+// <div>
+//       <h2>Registered Users</h2>
+//       <ul>
+//         {users.map((user) => (
+//           <li key={user.id}>
+//             <p>Name: {user.name}</p>
+//             <p>Email: {user.email}</p>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+
+// const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
+//   const handleChangeMessages = (
+//     collectionName: string,
+//     setMessages: (value: Message[]) => void,
+//   ) => {
+//     getMessages(collectionName, setMessages);
+//   };
+
+//   return (
+// };
+
+// export default ContactList;

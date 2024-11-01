@@ -2,7 +2,7 @@ type Contact = {
   id: number;
   name: string;
   collectionName: string;
-  avatarUrl?: string;
+  photoURL?: string;
 };
 
 export type { Contact };
