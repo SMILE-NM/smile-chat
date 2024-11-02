@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { fetchUsers } from '../../services/userService';
 import {
   Card,
   Avatar,
@@ -9,71 +8,85 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@mui/material';
-import { Contact, Message } from '../../types';
-import { getMessages } from '../../services/firebaseServices';
+import { Chat, Message } from '../../types/types';
+import { getUserChats } from '../../services/chatService'; // Функция для получения чатов
+import { getMessages } from '../../services/firebaseServices'; // Функция для загрузки сообщений по ID чата
 
-type ContactListProps = {
-  contacts: Contact[];
-  setMessages: (value: Message[]) => void;
+type ContactsListProps = {
+  setMessages: (messages: Message[]) => void; // Функция для установки сообщений в правой панели
+  currentUserId: string; // ID текущего пользователя
 };
 
-const ContactsList = () => {
-  const [users, setUsers] = useState<any[]>([]);
+const ContactsList: React.FC<ContactsListProps> = ({
+  setMessages,
+  currentUserId,
+}) => {
+  const [chats, setChats] = useState<Chat[]>([]); // Массив чатов
   const [loading, setLoading] = useState(true);
-  console.log('Users', users);
+
   useEffect(() => {
-    const loadUsers = async () => {
+    const loadChats = async () => {
       try {
-        const usersList = await fetchUsers();
-        setUsers(usersList);
+        const chatsList = await getUserChats(currentUserId); // Загружаем только чаты пользователя
+        setChats(chatsList);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching chats:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadUsers();
-  }, []);
+    loadChats();
+  }, [currentUserId]);
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
+  // Обработчик для клика по чату
+  const handleChatClick = async (chatId: string) => {
+    const messages = await getMessages(chatId); // Загружаем сообщения для выбранного чата
+    setMessages(messages); // Устанавливаем сообщения в компоненте чата
+  };
+
   return (
     <List
       sx={{
         width: '40%',
-        backgroundColor: '#f5f5f5', // Задаем сплошной цвет фона для списка
+        backgroundColor: '#f5f5f5',
         padding: '0px',
         maxHeight: '100vh',
         overflowY: 'auto',
       }}
     >
-      {users.map((user) => (
+      {chats.map((chat) => (
         <Card
-          // onClick={() =>
-          //   handleChangeMessages(contact.collectionName, setMessages)
-          // }
-          key={user.id}
+          key={chat.id}
+          onClick={() => handleChatClick(chat.id)} // Обрабатываем клик для отображения сообщений
           sx={{
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            '&:hover': {
-              backgroundColor: '#f5f5f5',
-            },
+            '&:hover': { backgroundColor: '#f5f5f5' },
             transition: '0.1s',
           }}
         >
           <ListItem>
             <ListItemAvatar sx={{ marginLeft: '10px' }}>
-              <Avatar src={user.photoURL} sx={{ bgcolor: '#1976d2' }}>
-                {user.name[0].toUpperCase()}
+              <Avatar
+                src={chat.participant.photoURL}
+                sx={{ bgcolor: '#1976d2' }}
+              >
+                {chat.participant.name[0].toUpperCase()}
               </Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Typography sx={{ fontWeight: 'regular', color: '#333' }}>
-                  {user.name}
+                  {chat.participant.name}
+                </Typography>
+              }
+              secondary={
+                <Typography variant="body2" color="textSecondary">
+                  {chat.lastMessage} {/* Отображаем последнее сообщение */}
                 </Typography>
               }
             />
@@ -85,28 +98,3 @@ const ContactsList = () => {
 };
 
 export default ContactsList;
-
-// <div>
-//       <h2>Registered Users</h2>
-//       <ul>
-//         {users.map((user) => (
-//           <li key={user.id}>
-//             <p>Name: {user.name}</p>
-//             <p>Email: {user.email}</p>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-
-// const ContactList: React.FC<ContactListProps> = ({ contacts, setMessages }) => {
-//   const handleChangeMessages = (
-//     collectionName: string,
-//     setMessages: (value: Message[]) => void,
-//   ) => {
-//     getMessages(collectionName, setMessages);
-//   };
-
-//   return (
-// };
-
-// export default ContactList;
