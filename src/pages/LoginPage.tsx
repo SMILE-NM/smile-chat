@@ -5,9 +5,7 @@ type Props = {
 
 const LoginPage: React.FC<Props> = ({ signInWithGoogle }) => {
   const handleLogin = async () => {
-    console.log('Working 1');
     await signInWithGoogle();
-    console.log('Working 2');
   };
 
   return (

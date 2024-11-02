@@ -1,4 +1,3 @@
-// src/services/chatService.ts
 import { db } from '../api/firebase';
 import {
   collection,
@@ -14,39 +13,41 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
+import { Message } from '../types/types';
 
-interface Message {
-  id?: string;
-  senderId: string;
-  receiverId: string;
-  messageText: string;
-  edited: boolean;
-  deleted: boolean;
-  createdAt: any;
-  updatedAt: any;
-}
+const checkChatExists = async (userId: string, otherUserId: string) => {
+  const chatsRef = collection(db, 'chats');
+  const q = query(chatsRef, where('participants', 'array-contains', userId));
 
-// Создание или получение чата
-export const getOrCreateChat = async (
-  userId1: string,
-  userId2: string,
-): Promise<string> => {
-  const chatId =
-    userId1 < userId2 ? `${userId1}_${userId2}` : `${userId2}_${userId1}`;
-  const chatRef = doc(db, 'chats', chatId);
-  const chatDoc = await getDoc(chatRef);
-
-  if (!chatDoc.exists()) {
-    await setDoc(chatRef, {
-      participants: [userId1, userId2],
-      createdAt: new Date(),
-    });
+  const querySnapshot = await getDocs(q);
+  for (const doc of querySnapshot.docs) {
+    const chatData = doc.data();
+    if (chatData.participants.includes(otherUserId)) {
+      return doc.id;
+    }
   }
 
-  return chatId;
+  return null;
 };
 
-// Отправка сообщения
+export const getOrCreateChat = async (userId: string, otherUserId: string) => {
+  try {
+    const existingChatId = await checkChatExists(userId, otherUserId);
+
+    if (existingChatId) {
+      return existingChatId;
+    }
+    const newChatRef = await addDoc(collection(db, 'chats'), {
+      participants: [userId, otherUserId],
+    });
+
+    return newChatRef.id;
+  } catch (error) {
+    console.error('Ошибка при получении или создании чата:', error);
+    throw new Error('Не удалось получить или создать чат');
+  }
+};
+
 export const sendMessage = async (
   chatId: string,
   senderId: string,
@@ -65,34 +66,6 @@ export const sendMessage = async (
   });
 };
 
-// Редактирование сообщения
-export const editMessage = async (
-  chatId: string,
-  messageId: string,
-  newText: string,
-): Promise<void> => {
-  const messageRef = doc(db, 'chats', chatId, 'messages', messageId);
-  await updateDoc(messageRef, {
-    messageText: newText,
-    edited: true,
-    updatedAt: serverTimestamp(),
-  });
-};
-
-// Удаление сообщения (мягкое удаление)
-export const deleteMessage = async (
-  chatId: string,
-  messageId: string,
-): Promise<void> => {
-  const messageRef = doc(db, 'chats', chatId, 'messages', messageId);
-  await updateDoc(messageRef, {
-    deleted: true,
-    messageText: '', // Очищаем текст для "мягкого" удаления
-    updatedAt: serverTimestamp(),
-  });
-};
-
-// Подписка на сообщения
 export const subscribeToMessages = (
   chatId: string,
   onMessageReceived: (messages: Message[]) => void,
