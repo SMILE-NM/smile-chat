@@ -24,3 +24,13 @@ export const fetchUserChatsWithDetails = async (userId: string) => {
     throw error; // Перебрасываем ошибку, чтобы обработать ее в вызывающем коде
   }
 };
+
+export const fetchUserById = async (userId: string): Promise<User | null> => {
+  try {
+    const userData = await getUserData(userId);
+    return userData ? (userData as User) : null; // Если пользователь найден, возвращаем его
+  } catch (error) {
+    console.error('Ошибка при загрузке пользователя:', error);
+    throw error; // Перебрасываем ошибку, чтобы обработать ее в вызывающем коде
+  }
+};

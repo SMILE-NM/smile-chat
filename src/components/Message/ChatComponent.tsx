@@ -1,23 +1,39 @@
 // src/components/ChatComponent.tsx
 import React, { useState, useEffect } from 'react';
 import { sendMessage, subscribeToMessages } from '../../services/chatServices';
-import { Message } from '../../types/types';
+import { Message, User } from '../../types/types';
+import MessageInput from './MessageInput';
+import MessageList from './MessageList';
+import { fetchUserById } from '../Chat/chatHelpers';
 
 interface ChatComponentProps {
-  userId: string;
+  user: User | null;
   chatId: string;
   receiverId: string;
 }
 
 const ChatComponent: React.FC<ChatComponentProps> = ({
-  userId,
+  user,
   chatId,
   receiverId,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageText, setMessageText] = useState('');
+  const [senderUser, setSenderUser] = useState<User | null>(null);
 
   useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userData = await fetchUserById(receiverId);
+        console.log('Get USer By ID', userData);
+        setSenderUser(userData);
+      } catch (err) {
+        console.error(err);
+      } finally {
+      }
+    };
+    loadUserData();
+
     const unsubscribe = subscribeToMessages(chatId, (newMessages) => {
       setMessages(newMessages);
     });
@@ -27,14 +43,14 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 
   const handleSendMessage = async () => {
     if (messageText.trim()) {
-      await sendMessage(chatId, userId, receiverId, messageText);
+      await sendMessage(chatId, user?.id || '', receiverId, messageText);
       setMessageText('');
     }
   };
 
   return (
     <div style={{ padding: '1rem' }}>
-      <div
+      {/* <div
         style={{
           height: '300px',
           overflowY: 'auto',
@@ -47,19 +63,23 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
             key={msg.id}
             style={{ textAlign: msg.senderId === userId ? 'right' : 'left' }}
           >
-            <strong>{msg.senderId === userId ? 'Вы' : 'Друг'}:</strong>{' '}
+            <strong>{msg.senderId === userId ? user?.name : 'Друг'}:</strong>{' '}
             {msg.messageText}
           </p>
         ))}
-      </div>
-      <input
-        type="text"
-        value={messageText}
-        onChange={(e) => setMessageText(e.target.value)}
-        placeholder="Введите сообщение"
-        style={{ width: '80%', marginRight: '10px' }}
+      </div> */}
+
+      {/* <MessageInput /> */}
+      <MessageList
+        messages={messages}
+        currentUser={user}
+        senderUser={senderUser}
       />
-      <button onClick={handleSendMessage}>Отправить</button>
+      <MessageInput
+        newMessage={messageText}
+        handleChange={(e) => setMessageText(e.target.value)}
+        handleSubmit={handleSendMessage}
+      />
     </div>
   );
 };

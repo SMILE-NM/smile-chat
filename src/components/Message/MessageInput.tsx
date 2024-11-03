@@ -1,11 +1,11 @@
-import { TextField, IconButton } from '@mui/material';
+import { TextField, IconButton, ListItem } from '@mui/material';
 import React from 'react';
 import { SendRounded } from '@mui/icons-material';
 
 type Props = {
   newMessage: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleSubmit: () => void;
 };
 
 const MessageInput: React.FC<Props> = ({
@@ -14,10 +14,7 @@ const MessageInput: React.FC<Props> = ({
   handleSubmit,
 }) => {
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ display: 'flex', alignItems: 'center' }}
-    >
+    <ListItem sx={{ display: 'flex' }}>
       <TextField
         fullWidth
         onChange={handleChange}
@@ -33,10 +30,10 @@ const MessageInput: React.FC<Props> = ({
           },
         }}
       />
-      <IconButton type="submit" color="primary">
+      <IconButton type="button" color="primary" onClick={handleSubmit}>
         <SendRounded />
       </IconButton>
-    </form>
+    </ListItem>
   );
 };
 

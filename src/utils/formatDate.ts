@@ -1,4 +1,4 @@
-export function formatDate(date: Date): string {
+export function formatDate(date: Date | null): string {
   // Опции форматирования
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -10,7 +10,7 @@ export function formatDate(date: Date): string {
   };
 
   // Получаем отформатированную строку
-  const formattedDate = date.toLocaleString('ru-RU', options).replace(',', '');
+  const formattedDate = date?.toLocaleString('ru-RU', options).replace(',', '');
 
-  return formattedDate;
+  return formattedDate || '';
 }

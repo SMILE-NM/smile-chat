@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserChatsWithDetails } from './chatHelpers';
 import { User, Chat } from '../../types/types';
+import {
+  Avatar,
+  Card,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 interface ChatListProps {
   userId: string;
@@ -16,10 +27,9 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
   useEffect(() => {
     const loadChats = async () => {
       try {
-        const { userChats, userDetails } = await fetchUserChatsWithDetails(
-          userId,
-        );
-        console.log('userChats', userChats);
+        const { userChats, userDetails } =
+          await fetchUserChatsWithDetails(userId);
+        // console.log('userChats', userChats);
         setUserChats(userChats);
 
         // setUserChats(() =>
@@ -27,7 +37,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
         //     (chat: Chat) => chat.messages && chat.messages.length > 0,
         //   ),
         // );
-
+        // console.log('USER DETAILS', userDetails);
         setUserDetails(userDetails);
       } catch (err) {
         setError('Ошибка при загрузке чатов'); // Обработка ошибки
@@ -45,25 +55,63 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
 
   return (
     <div>
-      <h2>Чаты</h2>
-      <ul>
+      <Typography variant="h5" mb={2}>
+        Chats
+      </Typography>
+      <List
+        sx={{
+          // width: '40%',
+
+          padding: '0px',
+          maxHeight: '100vh',
+          overflowY: 'auto',
+        }}
+      >
         {userChats.map((chat) => {
           console.log('Chat', chat);
           const otherUserId = chat.participants.find((id) => id !== userId);
           console.log('otherUserId', otherUserId);
           const otherUserData = userDetails[otherUserId || ''];
           return (
-            <li
+            <Card
               key={chat.id}
               onClick={() => onSelectChat(chat.id, otherUserId || '')}
             >
-              {otherUserData
-                ? `${otherUserData.name} (${otherUserData.email})`
-                : 'Пользователь не найден'}
-            </li>
+              <Divider />
+              <ListItemButton>
+                <ListItemAvatar>
+                  <Avatar
+                    src={otherUserData.photoURL}
+                    sx={{ bgcolor: '#1976d2' }}
+                  >
+                    {otherUserData.name[0].toUpperCase()}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={{ fontWeight: 'regular' }}
+                      color="textPrimary"
+                    >
+                      {otherUserData.name}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      sx={{ fontSize: 11 }}
+                    >
+                      {otherUserData.email}
+                    </Typography>
+                  }
+                />
+              </ListItemButton>
+              <Divider />
+            </Card>
           );
         })}
-      </ul>
+      </List>
     </div>
   );
 };

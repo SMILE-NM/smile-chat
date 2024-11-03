@@ -3,6 +3,16 @@ import React, { useEffect, useState } from 'react';
 
 import { User } from '../../types/types';
 import { getUsers } from '../../services/userService';
+import {
+  Avatar,
+  Card,
+  Divider,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 interface UserListProps {
   currentUserId: string;
@@ -46,35 +56,54 @@ const UserList: React.FC<UserListProps> = ({ currentUserId, onSelectUser }) => {
 
   return (
     <div>
-      <h4>Список пользователей</h4>
-      <ul>
+      <Typography variant="h5" mb={2}>
+        Contacts
+      </Typography>
+      <List
+        sx={{
+          padding: '0px',
+          maxHeight: '100vh',
+          overflowY: 'auto',
+        }}
+      >
         {users.map((user) => (
-          <UserItem
+          <Card
             key={user.id}
-            user={user}
-            isSending={isSending}
-            handleSelectUser={handleUserSelect}
-          />
+            onClick={() => !isSending && handleUserSelect(user.id)}
+          >
+            <Divider />
+            <ListItemButton>
+              <ListItemAvatar>
+                <Avatar src={user.photoURL} sx={{ bgcolor: '#1976d2' }}>
+                  {user.name[0].toUpperCase()}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <Typography
+                    sx={{ fontWeight: 'regular' }}
+                    color="textPrimary"
+                  >
+                    {user.name}
+                  </Typography>
+                }
+                secondary={
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontSize: 11 }}
+                  >
+                    {user.email}
+                  </Typography>
+                }
+              />
+            </ListItemButton>
+            <Divider />
+          </Card>
         ))}
-      </ul>
+      </List>
     </div>
   );
 };
-
-interface UserItemProps {
-  user: User;
-  isSending: boolean;
-  handleSelectUser: (userId: string) => void;
-}
-
-const UserItem: React.FC<UserItemProps> = ({
-  user,
-  isSending,
-  handleSelectUser,
-}) => (
-  <li onClick={() => !isSending && handleSelectUser(user.id)}>
-    {user.name} ({user.email})
-  </li>
-);
 
 export default UserList;
