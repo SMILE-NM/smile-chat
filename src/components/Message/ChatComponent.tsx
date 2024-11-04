@@ -5,9 +5,10 @@ import { Message, User } from '../../types/types';
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 import { fetchUserById } from '../Chat/chatHelpers';
+import { User as UserFB } from 'firebase/auth';
 
 interface ChatComponentProps {
-  user: User | null;
+  user: UserFB | null;
   chatId: string;
   receiverId: string;
 }
@@ -43,33 +44,13 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 
   const handleSendMessage = async () => {
     if (messageText.trim()) {
-      await sendMessage(chatId, user?.id || '', receiverId, messageText);
+      await sendMessage(chatId, user?.uid || '', receiverId, messageText);
       setMessageText('');
     }
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
-      {/* <div
-        style={{
-          height: '300px',
-          overflowY: 'auto',
-          border: '1px solid #ddd',
-          padding: '1rem',
-        }}
-      >
-        {messages.map((msg) => (
-          <p
-            key={msg.id}
-            style={{ textAlign: msg.senderId === userId ? 'right' : 'left' }}
-          >
-            <strong>{msg.senderId === userId ? user?.name : 'Друг'}:</strong>{' '}
-            {msg.messageText}
-          </p>
-        ))}
-      </div> */}
-
-      {/* <MessageInput /> */}
+    <>
       <MessageList
         messages={messages}
         currentUser={user}
@@ -80,7 +61,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
         handleChange={(e) => setMessageText(e.target.value)}
         handleSubmit={handleSendMessage}
       />
-    </div>
+    </>
   );
 };
 

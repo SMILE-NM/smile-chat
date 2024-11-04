@@ -1,26 +1,26 @@
 import React from 'react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { formatDate } from '../../utils/formatDate';
-import { Message, User } from '../../types/types';
-
+import { Message } from '../../types/types';
+import { User as UserFB } from 'firebase/auth';
 type CurrentUserMessageProps = {
   message: Message;
-  currentUser: User | null;
+  currentUser: UserFB | null;
 };
 
 export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
   message,
   currentUser,
 }) => (
-  <>
-    <Avatar
-      src={currentUser?.photoURL || ''}
-      sx={{
-        marginRight: 0,
-        marginLeft: 1,
-        alignSelf: 'end',
-      }}
-    />
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      width: '100%',
+      mb: 1,
+    }}
+  >
     <Box
       sx={{
         padding: '10px 15px',
@@ -29,6 +29,7 @@ export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
         color: '#333',
         background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
         boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+        marginLeft: 'auto', // добавляем отступ слева для выравнивания вправо
       }}
     >
       <Typography
@@ -58,5 +59,13 @@ export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
         {formatDate(message.createdAt)}
       </Typography>
     </Box>
-  </>
+    <Avatar
+      src={currentUser?.photoURL || ''}
+      sx={{
+        marginRight: 0,
+        marginLeft: 1,
+        alignSelf: 'end',
+      }}
+    />
+  </Box>
 );

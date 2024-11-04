@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
-import { extendTheme, styled } from '@mui/material/styles';
+import { extendTheme } from '@mui/material/styles';
 
 import { AppProvider, Navigation, Router } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import { PageContainer } from '@toolpad/core/PageContainer';
+
 import Grid from '@mui/material/Grid2';
-import {
-  BallotSharp,
-  ChatBubble,
-  ContactsRounded,
-  Logout,
-  MarkEmailReadTwoTone,
-} from '@mui/icons-material';
+import { ChatBubble, ContactsRounded, Logout } from '@mui/icons-material';
 import { Avatar, Divider } from '@mui/material';
 
-import { User } from 'firebase/auth';
-
+import { User as UserFB } from 'firebase/auth';
+import { auth } from '../api/firebase';
 import { getOrCreateChat } from '../services/chatServices';
 
 import ChatComponent from '../components/Message/ChatComponent';
 import UserList from '../components/Chat/UserList';
 import ChatList from '../components/Chat/ChatList';
 
-const NAVIGATION: Navigation = [
+import MyLogo from './smile.png';
+
+let NAVIGATION: Navigation = [
   {
-    segment: '1',
     title: 'Profile Name',
-    icon: <Avatar src="" sx={{ width: '25px', height: '25px' }} />,
   },
   {
     kind: 'header',
@@ -84,20 +78,22 @@ function useDemoRouter(initialPath: string): Router {
   return router;
 }
 
-const Skeleton = styled('div')<{ height: number }>(({ theme, height }) => ({
-  backgroundColor: theme.palette.action.hover,
-  borderRadius: theme.shape.borderRadius,
-  height,
-  content: '" "',
-}));
-
 type Props = {
-  user: User | null;
-  window?: Window;
+  user: UserFB | null;
+  window?: any;
 };
 
-const MainPage: React.FC<Props> = (props: any) => {
-  const { window, user } = props;
+const MainPage: React.FC<Props> = ({ user, window }) => {
+  NAVIGATION[0] = {
+    title: user?.displayName || ' ',
+    icon: (
+      <Avatar
+        src={user?.photoURL || ''}
+        sx={{ width: '27px', height: '27px' }}
+      />
+    ),
+  };
+  // const { window, user } = props;
   const router = useDemoRouter('/main');
   const demoWindow = window ? window() : undefined;
 
@@ -118,7 +114,6 @@ const MainPage: React.FC<Props> = (props: any) => {
     setReceiverId(otherUserId);
   };
 
-  // Функция для определения компонента в зависимости от маршрута
   const renderComponent = () => {
     switch (router.pathname) {
       case '/chats':
@@ -132,17 +127,26 @@ const MainPage: React.FC<Props> = (props: any) => {
             onSelectUser={handleSelectUser}
           />
         );
+      case '/login':
+        auth.signOut();
+        return;
       default:
-        return <div>Select a section</div>; // По умолчанию
+        return (
+          <ChatList userId={user?.uid || ''} onSelectChat={handleSelectChat} />
+        );
     }
   };
-  console.log('USER NAME', user?.name);
+
   return (
     <AppProvider
       navigation={NAVIGATION}
       router={router}
       theme={demoTheme}
       window={demoWindow}
+      branding={{
+        logo: <img src={MyLogo} alt="MUI logo" />,
+        title: 'Smile Chat',
+      }}
     >
       <DashboardLayout>
         <Grid container sx={{ height: '100vh' }}>
@@ -158,9 +162,7 @@ const MainPage: React.FC<Props> = (props: any) => {
                 receiverId={receiverId}
               />
             ) : (
-              <div style={{ padding: '1rem' }}>
-                Выберите пользователя или чат для начала общения
-              </div>
+              <div style={{ padding: '1rem' }}></div>
             )}
           </Grid>
         </Grid>

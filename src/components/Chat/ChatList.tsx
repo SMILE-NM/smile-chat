@@ -3,15 +3,16 @@ import { fetchUserChatsWithDetails } from './chatHelpers';
 import { User, Chat } from '../../types/types';
 import {
   Avatar,
+  Box,
   Card,
   Divider,
   List,
-  ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
   Typography,
 } from '@mui/material';
+import { SkeletonUsers } from './Skeleton/SkeletonUsers';
 
 interface ChatListProps {
   userId: string;
@@ -21,56 +22,55 @@ interface ChatListProps {
 const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
   const [userChats, setUserChats] = useState<Chat[]>([]);
   const [userDetails, setUserDetails] = useState<Record<string, User>>({});
-  const [loading, setLoading] = useState(true); // Для отображения состояния загрузки
-  const [error, setError] = useState<string | null>(null); // Для обработки ошибок
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadChats = async () => {
       try {
         const { userChats, userDetails } =
           await fetchUserChatsWithDetails(userId);
-        // console.log('userChats', userChats);
         setUserChats(userChats);
 
-        // setUserChats(() =>
-        //   userChats.filter(
-        //     (chat: Chat) => chat.messages && chat.messages.length > 0,
-        //   ),
-        // );
-        // console.log('USER DETAILS', userDetails);
         setUserDetails(userDetails);
       } catch (err) {
-        setError('Ошибка при загрузке чатов'); // Обработка ошибки
+        setError('Ошибка при загрузке чатов');
         console.error(err);
       } finally {
-        setLoading(false); // Завершение состояния загрузки
+        setLoading(false);
       }
     };
 
     loadChats();
   }, [userId]);
 
-  if (loading) return <div>Загрузка...</div>; // Состояние загрузки
+  if (loading) return <SkeletonUsers />;
   if (error) return <div>{error}</div>; // Отображение ошибки
 
   return (
-    <div>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        height: '90vh', // Высота чата с ограничением
+        overflowY: 'auto', // Добавляем вертикальную прокрутку
+        padding: 2,
+        margin: '0 auto',
+        backgroundColor: 'secondary',
+      }}
+    >
       <Typography variant="h5" mb={2}>
         Chats
       </Typography>
       <List
         sx={{
-          // width: '40%',
-
           padding: '0px',
           maxHeight: '100vh',
           overflowY: 'auto',
         }}
       >
         {userChats.map((chat) => {
-          console.log('Chat', chat);
           const otherUserId = chat.participants.find((id) => id !== userId);
-          console.log('otherUserId', otherUserId);
           const otherUserData = userDetails[otherUserId || ''];
           return (
             <Card
@@ -112,7 +112,7 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
           );
         })}
       </List>
-    </div>
+    </Box>
   );
 };
 

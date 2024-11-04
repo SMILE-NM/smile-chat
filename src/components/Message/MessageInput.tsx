@@ -23,8 +23,6 @@ const MessageInput: React.FC<Props> = ({
         variant="outlined"
         placeholder="Введите ваше сообщение..."
         sx={{
-          margin: '8px',
-
           '& .MuiOutlinedInput-root': {
             borderRadius: '15px',
           },

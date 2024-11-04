@@ -1,10 +1,9 @@
-// src/components/UserList.tsx
 import React, { useEffect, useState } from 'react';
-
-import { User } from '../../types/types';
 import { getUsers } from '../../services/userService';
+//Components
 import {
   Avatar,
+  Box,
   Card,
   Divider,
   List,
@@ -13,6 +12,9 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
+import { SkeletonUsers } from './Skeleton/SkeletonUsers';
+
+import { User } from '../../types/types';
 
 interface UserListProps {
   currentUserId: string;
@@ -23,7 +25,7 @@ const UserList: React.FC<UserListProps> = ({ currentUserId, onSelectUser }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -32,11 +34,12 @@ const UserList: React.FC<UserListProps> = ({ currentUserId, onSelectUser }) => {
         const filteredUsers = usersData.filter(
           (user: User) => user.id !== currentUserId,
         );
-
         setUsers(filteredUsers);
       } catch (err) {
         setError('Ошибка при загрузке пользователей');
         console.error('Ошибка при загрузке пользователей:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -50,12 +53,23 @@ const UserList: React.FC<UserListProps> = ({ currentUserId, onSelectUser }) => {
     setIsSending(false);
   };
 
+  if (loading) return <SkeletonUsers />;
   if (error) {
     return <div className="error">{error}</div>;
   }
 
   return (
-    <div>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        height: '90vh', // Высота чата с ограничением
+        overflowY: 'auto', // Добавляем вертикальную прокрутку
+        padding: 2,
+        margin: '0 auto',
+        backgroundColor: 'secondary',
+      }}
+    >
       <Typography variant="h5" mb={2}>
         Contacts
       </Typography>
@@ -102,7 +116,7 @@ const UserList: React.FC<UserListProps> = ({ currentUserId, onSelectUser }) => {
           </Card>
         ))}
       </List>
-    </div>
+    </Box>
   );
 };
 
