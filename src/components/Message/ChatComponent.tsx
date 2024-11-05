@@ -1,11 +1,13 @@
-// src/components/ChatComponent.tsx
 import React, { useState, useEffect } from 'react';
+
 import { sendMessage, subscribeToMessages } from '../../services/chatServices';
+import { fetchUserById } from '../Chat/chatHelpers';
+//Types
 import { Message, User } from '../../types/types';
+import { User as UserFB } from 'firebase/auth';
+//Components
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
-import { fetchUserById } from '../Chat/chatHelpers';
-import { User as UserFB } from 'firebase/auth';
 
 interface ChatComponentProps {
   user: UserFB | null;
@@ -26,11 +28,9 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
     const loadUserData = async () => {
       try {
         const userData = await fetchUserById(receiverId);
-        console.log('Get USer By ID', userData);
         setSenderUser(userData);
       } catch (err) {
         console.error(err);
-      } finally {
       }
     };
     loadUserData();
@@ -44,8 +44,8 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
 
   const handleSendMessage = async () => {
     if (messageText.trim()) {
-      await sendMessage(chatId, user?.uid || '', receiverId, messageText);
       setMessageText('');
+      await sendMessage(chatId, user?.uid || '', receiverId, messageText);
     }
   };
 

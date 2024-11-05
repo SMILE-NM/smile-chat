@@ -9,8 +9,12 @@ import {
   Divider,
   ListItemText,
 } from '@mui/material';
+
+//Types
 import { User as UserFB } from 'firebase/auth';
 import { Message, User } from '../../types/types';
+
+//Components
 import { CurrentUserMessage } from './CurrentUserMessage';
 import { UserMessage } from './UserMessage';
 
@@ -34,7 +38,7 @@ const MessageList: React.FC<Props> = ({
 
   return (
     <>
-      <Box sx={{ flexGrow: 1, backgroundColor: 'Menu' }}>
+      <Box sx={{ flexGrow: 1, backgroundColor: 'InfoBackground' }}>
         <Toolbar>
           <Avatar src={senderUser?.photoURL || ''} sx={{ mr: 1 }} />
           <ListItemText
@@ -60,7 +64,7 @@ const MessageList: React.FC<Props> = ({
         sx={{
           width: '100%',
           maxWidth: '100%',
-          height: '75vh',
+          height: '70vh',
           overflowY: 'auto',
           padding: 2,
           margin: '0 auto',
@@ -68,31 +72,26 @@ const MessageList: React.FC<Props> = ({
         }}
       >
         <List sx={{ padding: 0 }}>
-          {messages.map((message) => {
-            const chatInfo =
-              message.senderId === currentUser?.uid ? 'currentUser' : 'user';
-
-            return (
-              <ListItem
-                key={message.id}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  flexDirection: 'row',
-                  mb: 1.5,
-                }}
-              >
-                {chatInfo === 'currentUser' ? (
-                  <CurrentUserMessage
-                    message={message}
-                    currentUser={currentUser}
-                  />
-                ) : (
-                  <UserMessage message={message} senderUser={senderUser} />
-                )}
-              </ListItem>
-            );
-          })}
+          {messages.map((message) => (
+            <ListItem
+              key={message.id}
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                flexDirection: 'row',
+                mb: 1.5,
+              }}
+            >
+              {message.senderId === currentUser?.uid ? (
+                <CurrentUserMessage
+                  message={message}
+                  currentUser={currentUser}
+                />
+              ) : (
+                <UserMessage message={message} senderUser={senderUser} />
+              )}
+            </ListItem>
+          ))}
           <div ref={endOfMessagesRef} />
         </List>
       </Box>

@@ -29,7 +29,7 @@ export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
         color: '#333',
         background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
         boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-        marginLeft: 'auto', // добавляем отступ слева для выравнивания вправо
+        marginLeft: 'auto',
       }}
     >
       <Typography

@@ -12,6 +12,7 @@ import { User as UserFB } from 'firebase/auth';
 import { auth } from '../api/firebase';
 import { getOrCreateChat } from '../services/chatServices';
 
+//Components
 import ChatComponent from '../components/Message/ChatComponent';
 import UserList from '../components/Chat/UserList';
 import ChatList from '../components/Chat/ChatList';
@@ -93,7 +94,6 @@ const MainPage: React.FC<Props> = ({ user, window }) => {
       />
     ),
   };
-  // const { window, user } = props;
   const router = useDemoRouter('/main');
   const demoWindow = window ? window() : undefined;
 
@@ -107,8 +107,6 @@ const MainPage: React.FC<Props> = ({ user, window }) => {
 
   const handleSelectUser = async (otherUserId: string) => {
     if (!user) return;
-
-    // Получаем или создаем чат с выбранным пользователем
     const chatId = await getOrCreateChat(user.uid, otherUserId);
     setSelectedChat(chatId);
     setReceiverId(otherUserId);
@@ -144,17 +142,16 @@ const MainPage: React.FC<Props> = ({ user, window }) => {
       theme={demoTheme}
       window={demoWindow}
       branding={{
-        logo: <img src={MyLogo} alt="MUI logo" />,
-        title: 'Smile Chat',
+        logo: <img src={MyLogo} alt="SMILE CHAT logo" />,
+        // title: 'Smile Chat',
+        title: 'SMILE CHAT',
       }}
     >
       <DashboardLayout>
         <Grid container sx={{ height: '100vh' }}>
-          <Grid size={{ xs: 12, sm: 4 }} sx={{ padding: '6px' }}>
-            {renderComponent()}
-          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>{renderComponent()}</Grid>
           <Divider orientation="vertical" flexItem />
-          <Grid size={{ xs: 12, sm: 7.9 }} sx={{ padding: '8px' }}>
+          <Grid size={{ xs: 12, sm: 7.9 }}>
             {selectedChat && receiverId ? (
               <ChatComponent
                 user={user}

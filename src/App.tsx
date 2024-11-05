@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+//Firebase
 import { auth } from './api/firebase';
 import { User as UserFB } from 'firebase/auth';
 import { signInWithGoogle } from './services/authService';
@@ -15,7 +17,6 @@ const App: React.FC = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
-      console.log('Current User', currentUser);
       setInitializing(false);
     });
 

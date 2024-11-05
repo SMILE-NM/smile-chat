@@ -13,18 +13,25 @@ const MessageInput: React.FC<Props> = ({
   handleChange,
   handleSubmit,
 }) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   return (
     <ListItem sx={{ display: 'flex' }}>
       <TextField
         fullWidth
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         value={newMessage}
         id="fullWidth"
         variant="outlined"
         placeholder="Введите ваше сообщение..."
         sx={{
           '& .MuiOutlinedInput-root': {
-            borderRadius: '15px',
+            borderRadius: '10px',
           },
         }}
       />
