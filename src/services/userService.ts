@@ -10,22 +10,20 @@ import {
 } from 'firebase/firestore';
 import { User } from '../types/types';
 
-// Получаем всех пользователей
 export const getUsers = async (): Promise<User[]> => {
   try {
     const usersRef = collection(db, 'users');
     const userDocs = await getDocs(usersRef);
     return userDocs.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(), // Возвращаем все данные из документа
-    })) as User[]; // Приводим к типу User
+      ...doc.data(),
+    })) as User[];
   } catch (error) {
     console.error('Ошибка при загрузке пользователей:', error);
     throw new Error('Ошибка при загрузке пользователей');
   }
 };
 
-// Получаем чаты пользователя
 export const getUserChats = async (userId: string): Promise<any[]> => {
   try {
     const chatsRef = collection(db, 'chats');
@@ -42,7 +40,6 @@ export const getUserChats = async (userId: string): Promise<any[]> => {
   }
 };
 
-// Получаем данные конкретного пользователя
 export const getUserData = async (userId: string): Promise<User | null> => {
   try {
     const userRef = doc(db, 'users', userId);

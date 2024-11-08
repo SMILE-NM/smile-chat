@@ -1,11 +1,9 @@
 type Timestamp = { seconds: number; nanoseconds: number };
 
 export function formatDate(date: Date | Timestamp | null): string {
-  if (!date) return ''; // если дата равна null, возвращаем пустую строку
-
+  if (!date) return '';
   let dateObject: Date;
 
-  // Если это объект с `seconds` и `nanoseconds`, создаём объект Date
   if (typeof date === 'object' && 'seconds' in date && 'nanoseconds' in date) {
     dateObject = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
   } else if (date instanceof Date) {
@@ -23,11 +21,9 @@ export function formatDate(date: Date | Timestamp | null): string {
     hour12: false,
   };
 
-  console.log('Before Formatting Date:', dateObject);
   const formattedDate = dateObject
     .toLocaleString('ru-RU', options)
     .replace(',', '');
-  console.log('After Formatting Date:', formattedDate);
 
   return formattedDate;
 }

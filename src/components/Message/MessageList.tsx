@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '@mui/material/styles';
+
 import {
   Box,
   Typography,
@@ -29,6 +31,7 @@ const MessageList: React.FC<Props> = ({
   currentUser,
   senderUser,
 }) => {
+  const theme = useTheme();
   const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (endOfMessagesRef.current) {
@@ -84,11 +87,16 @@ const MessageList: React.FC<Props> = ({
             >
               {message.senderId === currentUser?.uid ? (
                 <CurrentUserMessage
+                  themeMode={theme.palette.mode}
                   message={message}
                   currentUser={currentUser}
                 />
               ) : (
-                <UserMessage message={message} senderUser={senderUser} />
+                <UserMessage
+                  themeMode={theme.palette.mode}
+                  message={message}
+                  senderUser={senderUser}
+                />
               )}
             </ListItem>
           ))}

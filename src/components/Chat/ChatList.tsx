@@ -16,7 +16,7 @@ import { SkeletonUsers } from './Skeleton/SkeletonUsers';
 
 interface ChatListProps {
   userId: string;
-  onSelectChat: (chatId: string, otherUserId: string) => void; // Это определение должно быть здесь
+  onSelectChat: (chatId: string, otherUserId: string) => void;
 }
 
 const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
@@ -31,7 +31,6 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
         const { userChats, userDetails } =
           await fetchUserChatsWithDetails(userId);
         setUserChats(userChats);
-
         setUserDetails(userDetails);
       } catch (err) {
         setError('Ошибка при загрузке чатов');
@@ -45,15 +44,15 @@ const ChatList: React.FC<ChatListProps> = ({ userId, onSelectChat }) => {
   }, [userId]);
 
   if (loading) return <SkeletonUsers />;
-  if (error) return <div>{error}</div>; // Отображение ошибки
+  if (error) return <div>{error}</div>;
 
   return (
     <Box
       sx={{
         width: '100%',
         maxWidth: '100%',
-        height: '60vh', // Высота чата с ограничением
-        overflowY: 'auto', // Добавляем вертикальную прокрутку
+        height: '60vh',
+        overflowY: 'auto',
         padding: 2,
         margin: '0 auto',
         backgroundColor: 'secondary',

@@ -4,11 +4,13 @@ import { formatDate } from '../../utils/formatDate';
 import { Message } from '../../types/types';
 import { User as UserFB } from 'firebase/auth';
 type CurrentUserMessageProps = {
+  themeMode: string;
   message: Message;
   currentUser: UserFB | null;
 };
 
 export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
+  themeMode,
   message,
   currentUser,
 }) => (
@@ -27,7 +29,10 @@ export const CurrentUserMessage: React.FC<CurrentUserMessageProps> = ({
         borderRadius: '16px 16px 4px 16px',
         maxWidth: '80%',
         color: '#333',
-        background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
+        background:
+          themeMode === 'light'
+            ? 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)'
+            : 'linear-gradient(135deg, #4a647d 0%, #38506a 100%)',
         boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
         marginLeft: 'auto',
       }}

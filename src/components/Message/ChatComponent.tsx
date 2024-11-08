@@ -40,6 +40,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
     });
 
     return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId]);
 
   const handleSendMessage = async () => {
